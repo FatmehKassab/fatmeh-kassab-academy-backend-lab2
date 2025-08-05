@@ -1,0 +1,68 @@
+Fatmeh Kassab     BackendLab Session2
+
+1. CREATE DATABASE LibraryDB;
+
+2. a) CREATE TABLE Books (
+    book_id INT PRIMARY KEY ,
+    title VARCHAR(255) NOT NULL,
+    author_id INT,
+    isbn VARCHAR(20) UNIQUE NOT NULL,
+    published_year INT,
+    FOREIGN KEY(author_id) REFERENCES Authors(author_id)
+);
+
+   b) CREATE TABLE Authors (
+    author_id INT PRIMARY KEY ,
+    name VARCHAR(100) NOT NULL,
+    birth_date DATE,
+    country VARCHAR(50)
+);
+
+   c) CREATE TABLE Borrowers (
+    borrower_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20)
+);
+
+   d) CREATE TABLE Loans (
+    loan_id INT PRIMARY KEY AUTO_INCREMENT,
+    book_id INT,
+    borrower_id INT,
+    loan_date DATE NOT NULL,
+    return_date DATE,
+    returned BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (book_id) REFERENCES Books(book_id),
+    FOREIGN KEY (borrower_id) Borrowers(borrower_id)
+);
+
+
+3. Data population
+
+INSERT INTO Authors (author_id,name, birth_date, country) VALUES 
+(1,'Carine Rizkallah', DATE '1980-07-31', 'Lebanon')
+
+INSERT INTO Authors (author_id,name, birth_date, country) VALUES 
+(2,'Nadine', DATE '1980-07-10', 'Lebanon')
+
+INSERT INTO Books (book_id,title, author_id, isbn, published_year) VALUES
+(1,'albi da2',1, '97803', 2015)
+
+INSERT INTO Books (book_id,title, author_id, isbn, published_year) VALUES
+(2,'mesh ana',1, '9663', 2015)
+
+INSERT INTO Books (book_id,title, author_id, isbn, published_year) VALUES
+(3,'ghannoujit baya',1, '9663', 2000) // I CHANGED THE ISBN IN THE CONSOLE BECAUSE ITS DUPLICATED
+
+INSERT INTO Loans (loan_id,book_id, borrower_id, loan_date, return_date, returned) VALUES
+(1, 1, '2023-01-15', '2023-02-15', TRUE),
+                                            (2, 2, '2023-03-10', '2023-04-10', FALSE),
+                                                                               (3, 3, '2023-05-20', '2023-06-20', TRUE),
+                                                                               (4, 1, '2023-06-01', '2023-07-01', FALSE),
+                                                                               (5, 4, '2023-07-15', '2023-08-15', TRUE),
+                                                                               (6, 2, '2023-08-10', '2023-09-10', FALSE);
+
+4. Queries
+
+SELECT * FROM Books WHERE published_year = 2015;
+
