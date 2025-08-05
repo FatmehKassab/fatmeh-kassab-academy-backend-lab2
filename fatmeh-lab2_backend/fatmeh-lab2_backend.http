@@ -1,0 +1,6 @@
+@fatmeh_lab2_backend_HostAddress = http://localhost:5168
+
+GET {{fatmeh_lab2_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
