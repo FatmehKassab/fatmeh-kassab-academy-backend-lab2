@@ -100,4 +100,37 @@ GROUP BY
 ORDER BY 
     loan_count DESC;
     
- 
+6.Procedure
+
+return a book CREATE OR REPLACE PROCEDURE return_book(
+                  p_loan_id INT,
+                  p_return_date DATE
+              )
+                  LANGUAGE plpgsql
+              AS $$
+              DECLARE
+                  loan_exists BOOLEAN;
+                  already_returned BOOLEAN;
+              BEGIN
+                  SELECT EXISTS (SELECT 1 FROM loans WHERE loan_id = p_loan_id) INTO loan_exists;
+              
+                  SELECT returned FROM loans WHERE loan_id = p_loan_id INTO already_returned;
+              
+                  IF NOT loan_exists THEN
+                      RAISE EXCEPTION 'Loan record not found';
+                  ELSIF already_returned THEN
+                      RAISE EXCEPTION 'This book was already returned';
+                  ELSE
+                      UPDATE loans
+                      SET returned = TRUE,
+                          return_date = p_return_date
+                      WHERE loan_id = p_loan_id;
+              
+                      RAISE NOTICE 'Book successfully returned. Thank you!';
+                  END IF;
+              END;
+              $$;
+              
+              
+              
+ borrow a book
