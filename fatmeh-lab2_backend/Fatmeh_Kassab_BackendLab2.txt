@@ -146,7 +146,10 @@ AS $$
 DECLARE
     book_available BOOLEAN;
     due_date DATE;
+    next_id INT;
 BEGIN
+    SELECT COALESCE(MAX(loan_id), 0) + 1 INTO next_id FROM loans;
+
     SELECT NOT EXISTS (
         SELECT 1 FROM loans
         WHERE book_id = p_book_id
@@ -156,8 +159,8 @@ BEGIN
     due_date := p_loan_date + (p_due_days || ' days')::INTERVAL;
 
     IF book_available THEN
-        INSERT INTO loans (book_id, borrower_id, loan_date, return_date, returned)
-        VALUES (p_book_id, p_borrower_id, p_loan_date, due_date, FALSE);
+        INSERT INTO loans (loan_id, book_id, borrower_id, loan_date, return_date, returned)
+        VALUES (next_id, p_book_id, p_borrower_id, p_loan_date, due_date, FALSE);
 
         RAISE NOTICE 'Book successfully borrowed. Due date: %', due_date;
     ELSE
@@ -165,3 +168,6 @@ BEGIN
     END IF;
 END;
 $$;
+
+
+execute CALL borrow_book(3, 2, CURRENT_DATE, 14);
