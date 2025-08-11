@@ -102,7 +102,8 @@ ORDER BY
     
 6.Procedure
 
-return a book CREATE OR REPLACE PROCEDURE return_book(
+return a book 
+CREATE OR REPLACE PROCEDURE return_book(
                   p_loan_id INT,
                   p_return_date DATE
               )
@@ -131,6 +132,36 @@ return a book CREATE OR REPLACE PROCEDURE return_book(
               END;
               $$;
               
-              
+  execute: CALL return_book(2, CURRENT_DATE);      
               
  borrow a book
+CREATE OR REPLACE PROCEDURE borrow_book(
+    p_book_id INT,
+    p_borrower_id INT,
+    p_loan_date DATE,
+    p_due_days INT
+)
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    book_available BOOLEAN;
+    due_date DATE;
+BEGIN
+    SELECT NOT EXISTS (
+        SELECT 1 FROM loans
+        WHERE book_id = p_book_id
+          AND returned = FALSE
+    ) INTO book_available;
+
+    due_date := p_loan_date + (p_due_days || ' days')::INTERVAL;
+
+    IF book_available THEN
+        INSERT INTO loans (book_id, borrower_id, loan_date, return_date, returned)
+        VALUES (p_book_id, p_borrower_id, p_loan_date, due_date, FALSE);
+
+        RAISE NOTICE 'Book successfully borrowed. Due date: %', due_date;
+    ELSE
+        RAISE EXCEPTION 'Book is currently not available for borrowing';
+    END IF;
+END;
+$$;
