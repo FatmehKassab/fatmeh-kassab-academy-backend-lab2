@@ -54,15 +54,29 @@ INSERT INTO Books (book_id,title, author_id, isbn, published_year) VALUES
 INSERT INTO Books (book_id,title, author_id, isbn, published_year) VALUES
 (3,'ghannoujit baya',1, '9663', 2000) // I CHANGED THE ISBN IN THE CONSOLE BECAUSE ITS DUPLICATED
 
+INSERT INTO Borrowers (borrower_id,name, email, phone) VALUES
+    (2,'Nari Kassab', 'nari@gmail.com', '55590101')
+    
 INSERT INTO Loans (loan_id,book_id, borrower_id, loan_date, return_date, returned) VALUES
-(1, 1, '2023-01-15', '2023-02-15', TRUE),
-                                            (2, 2, '2023-03-10', '2023-04-10', FALSE),
-                                                                               (3, 3, '2023-05-20', '2023-06-20', TRUE),
-                                                                               (4, 1, '2023-06-01', '2023-07-01', FALSE),
-                                                                               (5, 4, '2023-07-15', '2023-08-15', TRUE),
-                                                                               (6, 2, '2023-08-10', '2023-09-10', FALSE);
-
+(1, 1,1,  DATE '2025-01-15',  DATE '2025-02-15', TRUE),
+(2, 2,1,  DATE '2025-01-15', DATE '2025-02-15', FALSE)
 4. Queries
 
 SELECT * FROM Books WHERE published_year = 2015;
 
+SELECT l.loan_id, b.title, br.name AS borrower_name, 
+       l.loan_date, l.return_date
+FROM Loans l
+JOIN Books b ON l.book_id = b.book_id
+JOIN Borrowers br ON l.borrower_id = br.borrower_id
+WHERE l.returned = FALSE AND l.return_date < '2025-09-15';
+
+SELECT b.title, a.name AS author, l.loan_date, l.return_date
+FROM Loans l
+JOIN Books b ON l.book_id = b.book_id
+JOIN Authors a ON b.author_id = a.author_id
+JOIN Borrowers br ON l.borrower_id = br.borrower_id
+WHERE br.name = 'Fatmeh Kassab';
+
+SELECT COUNT(*) AS total_books 
+FROM Books;
