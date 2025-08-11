@@ -80,3 +80,24 @@ WHERE br.name = 'Fatmeh Kassab';
 
 SELECT COUNT(*) AS total_books 
 FROM Books;
+
+5.Views
+
+CREATE VIEW PopularBooks AS
+SELECT 
+    b.book_id,
+    b.title,
+    a.name AS author,
+    COUNT(l.loan_id) AS loan_count
+FROM 
+    Books b
+JOIN 
+    Authors a ON b.author_id = a.author_id
+LEFT JOIN 
+    Loans l ON b.book_id = l.book_id
+GROUP BY 
+    b.book_id, b.title, a.name
+ORDER BY 
+    loan_count DESC;
+    
+ 
